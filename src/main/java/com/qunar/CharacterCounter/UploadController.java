@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,16 +26,27 @@ public class UploadController {
         CharacterCounter counter = new CharacterCounter(fileName);
         System.out.println(fileName);
         Map res = counter.parse();
+
+        Map chinese = counter.topChinese();
+        LinkedList top = (LinkedList) counter.getTop3();
+        model.addAttribute("res", res);
+        model.addAttribute("chinese",chinese);
+        model.addAttribute("top",top);
         model.addAttribute("res", res);
         return "upload";
 
 }
-    @RequestMapping(path = "string",method = RequestMethod.POST)
+    @RequestMapping(path = "/string",method = RequestMethod.POST)
     //接受前台传递的字符串进行分析
-    public String upload(@RequestParam("string")String string ,Model model){
+    public String upload(@RequestParam("string")String string ,Model model) throws UnsupportedEncodingException {
         CharacterCounter counter = new CharacterCounter(string);
         Map res = counter.parse();
+
+        Map chinese = counter.topChinese();
+        LinkedList top = (LinkedList) counter.getTop3();
         model.addAttribute("res", res);
+        model.addAttribute("chinese",chinese);
+        model.addAttribute("top",top);
         return "upload";
     }
 
